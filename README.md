@@ -2,6 +2,10 @@
 
 ## Table of Contents
 * [Ghibli Food Bookshelf: A Recipe Journey](#ghibli-food-bookshelf-a-recipe-journey)
+* [Project Integration](#project-integration)
+* [Setup & Installation](#setup--installation)
+* [Tech Stack](#tech-stack)
+* [API Integration](#api-integration)
 * [Basic Web Programming Learning](#basic-web-programming-learning)
 * [Fundamental Front-End Web Development Learning Journey](#fundamental-front-end-web-development-learning-journey)
 * [Learning Front-End Web Development for Beginners](#learning-front-end-web-development-for-beginners)
@@ -97,6 +101,399 @@
 
 - **Local Storage:**  
   All recipe book data is saved using the browser's `localStorage` API, ensuring persistence between user sessions.
+- **Backend Integration:**  
+  When connected to the backend API, data is synchronized with PostgreSQL database for cross-device access.
+
+---
+
+## 🔗 Project Integration
+
+This frontend application is part of a larger integrated ecosystem:
+
+### 🔧 Backend Integration (Back-End-Web)
+- **API Endpoint**: `http://localhost:5000/api/v1`
+- **Authentication**: JWT tokens via HttpOnly cookies
+- **Features**: User accounts, cloud book storage, cross-device sync
+
+### 🤖 Machine Learning Integration (Machine-Learning-Web)
+- **Recommendations**: Personalized book suggestions based on reading history
+- **Smart Search**: AI-enhanced search with content analysis
+- **User Behavior**: Learning from user interactions to improve suggestions
+
+### 🗄️ Database Integration (Database-Web)
+- **Data Storage**: PostgreSQL with full user libraries and book metadata
+- **Admin Access**: Web-based database administration panel
+- **Backup**: Automated data backup and recovery
+
+### 🚀 DevOps Integration (DevOps-Web)
+- **Containerization**: Docker support for consistent deployment
+- **CI/CD**: Automated testing and deployment pipelines
+- **Monitoring**: Real-time performance and error tracking
+
+---
+
+## 🛠️ Setup & Installation
+
+### Prerequisites
+- **Node.js 18+** and **npm**
+- **Git** for version control
+- **Backend services** (optional for full functionality)
+
+### Quick Start
+
+1. **Clone and Install**
+   ```bash
+   cd Front-End-Web/Ghibli-Food-Receipt
+   npm install
+   ```
+
+2. **Environment Configuration**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Configure the following variables:
+   ```env
+   VITE_API_URL=http://localhost:5000/api/v1
+   VITE_ML_URL=http://localhost:8001
+   VITE_APP_MODE=development
+   ```
+
+3. **Development Server**
+   ```bash
+   npm run dev
+   ```
+   Access at: `http://localhost:3000`
+
+4. **Production Build**
+   ```bash
+   npm run build
+   npm run preview
+   ```
+
+### Integration Setup (Full Stack)
+
+For complete integration with all services:
+
+1. **Start Backend Services**
+   ```bash
+   # Database
+   cd Database-Web/Ghibli-Food-Database
+   npm run dev
+   
+   # Backend API
+   cd Back-End-Web/Ghibli-Food-Receipt-API
+   npm run dev
+   
+   # ML Service
+   cd Machine-Learnimg-Web/Ghibli-Food-ML
+   python src/main.py
+   ```
+
+2. **Start Frontend**
+   ```bash
+   cd Front-End-Web/Ghibli-Food-Receipt
+   npm run dev
+   ```
+
+### Docker Integration
+
+Use the integrated Docker setup:
+```bash
+cd DevOps-Web/Ghibli-Food-DevOps
+docker-compose up -d
+```
+
+---
+
+## 🔧 Tech Stack
+
+### Core Framework & Build Tools
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **React** | v18+ | Frontend framework with hooks and context |
+| **Vite** | Latest | Lightning-fast build tool and dev server |
+| **JavaScript** | ES6+ | Modern JavaScript with modules and async/await |
+
+### Styling & UI
+
+| Technology | Purpose |
+|------------|---------|
+| **Tailwind CSS** | Utility-first CSS framework |
+| **Custom CSS** | Component-specific styling with CSS variables |
+| **Google Fonts** | Typography (Lora, Patrick Hand, Quicksand) |
+| **Responsive Design** | Mobile-first approach with breakpoints |
+
+### State Management & Routing
+
+| Technology | Purpose |
+|------------|---------|
+| **React Hooks** | `useState`, `useEffect`, `useRef`, `useContext` |
+| **React Router DOM** | Client-side routing and navigation |
+| **Context API** | Global state management for user and app state |
+
+### UI Components & Interactions
+
+| Technology | Purpose |
+|------------|---------|
+| **React Hot Toast** | Non-intrusive notifications |
+| **Huge Icons React** | Comprehensive icon library |
+| **Lottie React Player** | Smooth animations and micro-interactions |
+
+### Data & API Integration
+
+| Technology | Purpose |
+|------------|---------|
+| **Fetch API** | HTTP requests to backend services |
+| **Local Storage** | Client-side data persistence |
+| **WebSocket** | Real-time updates (when backend connected) |
+
+---
+
+## 🔌 API Integration
+
+### Backend API Integration
+
+```javascript
+// API Configuration
+const API_CONFIG = {
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+  TIMEOUT: 10000,
+  HEADERS: {
+    'Content-Type': 'application/json'
+  }
+}
+
+// Authentication API
+const authAPI = {
+  login: (credentials) => fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(credentials)
+  }),
+  
+  register: (userData) => fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(userData)
+  }),
+  
+  logout: () => fetch(`${API_CONFIG.BASE_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include'
+  })
+}
+
+// Books API
+const booksAPI = {
+  getAll: (params = {}) => {
+    const query = new URLSearchParams(params)
+    return fetch(`${API_CONFIG.BASE_URL}/books?${query}`)
+  },
+  
+  getById: (id) => fetch(`${API_CONFIG.BASE_URL}/books/${id}`),
+  
+  create: (bookData) => fetch(`${API_CONFIG.BASE_URL}/books`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(bookData)
+  }),
+  
+  update: (id, bookData) => fetch(`${API_CONFIG.BASE_URL}/books/${id}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(bookData)
+  })
+}
+
+// User Library API
+const libraryAPI = {
+  getBooks: () => fetch(`${API_CONFIG.BASE_URL}/library`, {
+    credentials: 'include'
+  }),
+  
+  addBook: (bookId, data = {}) => fetch(`${API_CONFIG.BASE_URL}/library/${bookId}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(data)
+  }),
+  
+  updateBook: (bookId, data) => fetch(`${API_CONFIG.BASE_URL}/library/${bookId}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: API_CONFIG.HEADERS,
+    body: JSON.stringify(data)
+  })
+}
+```
+
+### Machine Learning API Integration
+
+```javascript
+// ML Service Configuration
+const ML_API_URL = import.meta.env.VITE_ML_URL || 'http://localhost:8001'
+
+// Recommendations API
+const recommendationsAPI = {
+  getPersonalized: async (userId, preferences = {}) => {
+    const response = await fetch(`${ML_API_URL}/recommend`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId,
+        preferences,
+        num_recommendations: 10
+      })
+    })
+    return response.json()
+  },
+  
+  getSimilar: async (bookId, limit = 5) => {
+    const response = await fetch(`${ML_API_URL}/similar/${bookId}?limit=${limit}`)
+    return response.json()
+  },
+  
+  searchBooks: async (query, filters = {}) => {
+    const response = await fetch(`${ML_API_URL}/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, filters })
+    })
+    return response.json()
+  }
+}
+```
+
+### State Management Integration
+
+```javascript
+// App Context for global state
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
+
+const AppContext = createContext()
+
+const initialState = {
+  user: null,
+  books: [],
+  userLibrary: [],
+  recommendations: [],
+  loading: false,
+  error: null,
+  isOffline: false
+}
+
+function appReducer(state, action) {
+  switch (action.type) {
+    case 'SET_USER':
+      return { ...state, user: action.payload }
+    case 'SET_BOOKS':
+      return { ...state, books: action.payload }
+    case 'SET_USER_LIBRARY':
+      return { ...state, userLibrary: action.payload }
+    case 'SET_RECOMMENDATIONS':
+      return { ...state, recommendations: action.payload }
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
+    case 'SET_OFFLINE':
+      return { ...state, isOffline: action.payload }
+    default:
+      return state
+  }
+}
+
+export function AppProvider({ children }) {
+  const [state, dispatch] = useReducer(appReducer, initialState)
+  
+  // Auto-sync with backend when online
+  useEffect(() => {
+    const syncData = async () => {
+      if (!state.isOffline && state.user) {
+        try {
+          dispatch({ type: 'SET_LOADING', payload: true })
+          
+          // Sync user library
+          const libraryResponse = await libraryAPI.getBooks()
+          const libraryData = await libraryResponse.json()
+          dispatch({ type: 'SET_USER_LIBRARY', payload: libraryData })
+          
+          // Get personalized recommendations
+          const recommendations = await recommendationsAPI.getPersonalized(state.user.id)
+          dispatch({ type: 'SET_RECOMMENDATIONS', payload: recommendations })
+          
+        } catch (error) {
+          console.error('Sync failed:', error)
+          dispatch({ type: 'SET_ERROR', payload: error.message })
+        } finally {
+          dispatch({ type: 'SET_LOADING', payload: false })
+        }
+      }
+    }
+    
+    syncData()
+  }, [state.user, state.isOffline])
+  
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  )
+}
+
+export const useApp = () => useContext(AppContext)
+```
+
+### Error Handling & Offline Support
+
+```javascript
+// Enhanced error handling
+const apiRequest = async (requestFn, fallbackFn = null) => {
+  try {
+    const response = await requestFn()
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`)
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('API Request failed:', error)
+    
+    // Try fallback (local storage, cached data, etc.)
+    if (fallbackFn) {
+      return await fallbackFn()
+    }
+    
+    // Update offline status
+    if (error.name === 'NetworkError' || !navigator.onLine) {
+      dispatch({ type: 'SET_OFFLINE', payload: true })
+    }
+    
+    throw error
+  }
+}
+
+// Offline detection
+useEffect(() => {
+  const handleOnline = () => dispatch({ type: 'SET_OFFLINE', payload: false })
+  const handleOffline = () => dispatch({ type: 'SET_OFFLINE', payload: true })
+  
+  window.addEventListener('online', handleOnline)
+  window.addEventListener('offline', handleOffline)
+  
+  return () => {
+    window.removeEventListener('online', handleOnline)
+    window.removeEventListener('offline', handleOffline)
+  }
+}, [])
+```
 
 ---
 
